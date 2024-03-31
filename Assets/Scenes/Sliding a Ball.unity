@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 1885606256}
   - component: {fileID: 1885606255}
   - component: {fileID: 1885606260}
-  - component: {fileID: 1885606259}
+  - component: {fileID: 1885606261}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -522,18 +522,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1885606259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1885606254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73b83d374c51e714c9987a08b8373678, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!96 &1885606260
 TrailRenderer:
   serializedVersion: 3
@@ -638,6 +626,26 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &1885606261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885606254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e76b78ba309233b49867ce7c54f7a533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSpeed: 10
+  maxAcceleration: 10
+  allowedArea:
+    serializedVersion: 2
+    x: -5
+    y: -5
+    width: 10
+    height: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
