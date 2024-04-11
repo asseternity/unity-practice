@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class PhysicsBehavior : MonoBehaviour
 {
-    [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 25f;
+    [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 25f, maxSnapSpeed = 100f;
     [SerializeField, Range(0f, 10f)] float jumpHeight = 2f;
     [SerializeField, Range(0f, 10)] int maxAirJumps = 1;
+    [SerializeField, Min(0f)] float probeDistance = 1f;
     float minGroundDotProduct;
     int jumpPhase = 0;
     Vector3 velocity = Vector3.zero;
@@ -12,18 +13,12 @@ public class PhysicsBehavior : MonoBehaviour
     Vector3 contactNormal;
     bool desiredJump = false;
     bool onGround = false;
+    int stepsSinceLastGrounded;
     Rigidbody body;
 
-    void OnValidate()
-    {
-        minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
-    } 
+    void OnValidate() { minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad); } 
 
-    void Awake()
-    {
-        body = GetComponent<Rigidbody>();
-        OnValidate();
-    }
+    void Awake() { body = GetComponent<Rigidbody>(); OnValidate(); }
 
     void Update()
     {
@@ -34,17 +29,16 @@ public class PhysicsBehavior : MonoBehaviour
 
         desiredVelocity = new Vector3(playerInput.x, 0f, playerInput.y) * maxSpeed;
         desiredJump |= Input.GetButtonDown("Jump");
+
+        GetComponent<Renderer>().material.SetColor("_Color", onGround ? Color.black : Color.white );
     }
 
     void FixedUpdate()
     {
         UpdateState();
         AdjustVelocity();
-
         if (desiredJump) { desiredJump = false; Jump(); }
-
         body.velocity = velocity;
-
         ClearState();
     }
     void ClearState()
@@ -70,24 +64,19 @@ public class PhysicsBehavior : MonoBehaviour
         for (int i = 0; i < collision.contactCount; i++)
         {
             Vector3 normal = collision.GetContact(i).normal;
-            if (normal.y >= minGroundDotProduct)
-            {
-                onGround = true;
-                contactNormal += normal;
-            }
+            if (normal.y >= minGroundDotProduct) { onGround = true; contactNormal += normal; }
         }
     }
     void UpdateState()
     {
+        stepsSinceLastGrounded += 1;
         velocity = body.velocity; // update the velocity variable with the current velocity of a Rigidbody component (body) attached to a game object.
-        if (onGround) { jumpPhase = 0; contactNormal.Normalize(); }
+        if (onGround || SnapToGround()) { stepsSinceLastGrounded = 0; jumpPhase = 0; contactNormal.Normalize(); }
         else { contactNormal = Vector3.up; }
     }
-    Vector3 ProjectOnContactPlane (Vector3 vector) 
-    // This method takes a vector (like the right or forward direction) and returns a new vector that is aligned to be parallel with the slope's surface.
-    {
-        return vector - contactNormal * Vector3.Dot(vector, contactNormal);
-    }
+    Vector3 ProjectOnContactPlane (Vector3 vector) { return vector - contactNormal * Vector3.Dot(vector, contactNormal); }
+    // Method above takes a vector (like the right or forward direction) and returns a new vector that is aligned to be parallel with the slope's surface.
+
     void AdjustVelocity()
     {
         Vector3 xAxis = ProjectOnContactPlane(Vector3.right).normalized;
@@ -107,5 +96,19 @@ public class PhysicsBehavior : MonoBehaviour
         // so, xAxis and zAxis are directions, and newX minus currentX is the speed.
         // xAxis and zAxis are directions (unit vectors), and newX - currentX represents the change in speed along those directions
         velocity += xAxis * (newX - currentX) + zAxis * (newZ - currentZ);
+    }
+    bool SnapToGround()
+    {
+        if (stepsSinceLastGrounded > 1) { return false; }
+        float speed = velocity.magnitude;
+        if (speed > maxSnapSpeed) { return false; }
+        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance)) { Debug.Log("Ground not detected"); return false; }
+        if (hit.normal.y < minGroundDotProduct) { return false;}
+
+        Debug.Log("Ground detected at:" + hit.normal.y);
+        contactNormal = hit.normal;
+        float dot = Vector3.Dot(velocity, hit.normal);
+        if (dot > 0f) { velocity = (velocity - hit.normal * dot).normalized * speed; }
+        return true;
     }
 }
