@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class PhysicsBehavior : MonoBehaviour
 {
-    [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 25f, maxSnapSpeed = 100f;
+    [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 45f, maxSnapSpeed = 100f;
     [SerializeField, Range(0f, 10f)] float jumpHeight = 2f;
     [SerializeField, Range(0f, 10)] int maxAirJumps = 1;
     [SerializeField, Min(0f)] float probeDistance = 1f;
+    [SerializeField] LayerMask probeMask = -1;
     float minGroundDotProduct;
     int jumpPhase = 0;
     Vector3 velocity = Vector3.zero;
@@ -13,7 +14,7 @@ public class PhysicsBehavior : MonoBehaviour
     Vector3 contactNormal;
     bool desiredJump = false;
     bool onGround = false;
-    int stepsSinceLastGrounded;
+    int stepsSinceLastGrounded, stepsSinceLastJump;
     Rigidbody body;
 
     void OnValidate() { minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad); } 
@@ -48,6 +49,7 @@ public class PhysicsBehavior : MonoBehaviour
     {
         if (onGround || jumpPhase < maxAirJumps)
         {
+            stepsSinceLastJump = 0;
             jumpPhase += 1;
             float jumpSpeed = Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
             float alignedSpeed = Vector3.Dot(velocity, contactNormal); // this is the dot product (middle) between the two vectors / angles
@@ -70,6 +72,7 @@ public class PhysicsBehavior : MonoBehaviour
     void UpdateState()
     {
         stepsSinceLastGrounded += 1;
+        stepsSinceLastJump += 1;
         velocity = body.velocity; // update the velocity variable with the current velocity of a Rigidbody component (body) attached to a game object.
         if (onGround || SnapToGround()) { stepsSinceLastGrounded = 0; jumpPhase = 0; contactNormal.Normalize(); }
         else { contactNormal = Vector3.up; }
@@ -99,10 +102,10 @@ public class PhysicsBehavior : MonoBehaviour
     }
     bool SnapToGround()
     {
-        if (stepsSinceLastGrounded > 1) { return false; }
+        if (stepsSinceLastGrounded > 1 || stepsSinceLastJump <= 2) { return false; }
         float speed = velocity.magnitude;
         if (speed > maxSnapSpeed) { return false; }
-        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance)) { Debug.Log("Ground not detected"); return false; }
+        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance, probeMask)) { Debug.Log("Ground not detected"); return false; }
         if (hit.normal.y < minGroundDotProduct) { return false;}
 
         Debug.Log("Ground detected at:" + hit.normal.y);
