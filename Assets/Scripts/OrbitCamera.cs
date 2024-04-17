@@ -12,11 +12,13 @@ public class OrbitCamera : MonoBehaviour
     Vector2 orbitAngles = new Vector2(45f, 0f);
     Vector2 input = Vector2.zero;
     Vector3 focusPoint;
+    public GameObject ObjectToSpawn;
     public InputAction cameraControls;
-
-    private void OnEnable() { cameraControls.Enable(); }
-    private void OnDisable() { cameraControls.Disable(); }
-    void Awake() { focusPoint = focus.position; }
+    public InputAction spawner;
+    Camera regularCamera;
+    private void OnEnable() { cameraControls.Enable(); spawner.Enable(); }
+    private void OnDisable() { cameraControls.Disable(); spawner.Disable(); }
+    void Awake() { focusPoint = focus.position; regularCamera = GetComponent<Camera>(); }
 
     void LateUpdate()
     {
@@ -25,7 +27,14 @@ public class OrbitCamera : MonoBehaviour
         Quaternion lookRotation = Quaternion.Euler(orbitAngles);
         Vector3 lookDirection = lookRotation * Vector3.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;
+
+        if (Physics.BoxCast(focusPoint, CameraHalfExtends, -lookDirection, out RaycastHit hit, lookRotation, distance - regularCamera.nearClipPlane))
+        {
+            lookPosition = focusPoint - lookDirection * (hit.distance + regularCamera.nearClipPlane);
+        }
+
         transform.SetPositionAndRotation(lookPosition, lookRotation);
+        SpawnCube();
     }
 
     void UpdateFocusPoint()
@@ -45,14 +54,28 @@ public class OrbitCamera : MonoBehaviour
         input = cameraControls.ReadValue<Vector2>();
         float hori = -input.y;
         float vert = input.x;
-        // Vector2 input = new Vector2(
-        //     Input.GetAxis("Vertical Camera"),
-        //     Input.GetAxis("Horizontal Camera")
-        // );
         const float minimalInput = 0.001f;
         if (hori < -minimalInput || hori > minimalInput || vert < -minimalInput || vert > minimalInput)
+        { orbitAngles += rotationSpeed * Time.unscaledDeltaTime * new Vector2(hori, vert); }
+    }
+
+    Vector3 CameraHalfExtends
+    {
+        get {
+            Vector3 halfExtends;
+            halfExtends.y = regularCamera.nearClipPlane * Mathf.Tan(0.5f * Mathf.Deg2Rad * regularCamera.fieldOfView);
+            halfExtends.x = halfExtends.y * regularCamera.aspect;
+            halfExtends.z = 0f;
+            return halfExtends;
+        }
+    }
+    void SpawnCube()
+    {
+        float spawnButton = spawner.ReadValue<float>();
+        if (spawnButton > 0)
         {
-            orbitAngles += rotationSpeed * Time.unscaledDeltaTime * new Vector2(hori, vert);
+            Debug.Log("button pressed");
+            Instantiate(ObjectToSpawn, new Vector3(focus.position.x + 1f, focus.position.y, focus.position.z), Quaternion.identity);
         }
     }
 }

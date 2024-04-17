@@ -64,7 +64,12 @@ public class PhysicsBehavior : MonoBehaviour
         }
     }
     void OnCollisionEnter(Collision collision)
-    { EvaluateCollision(collision); }
+    { 
+        EvaluateCollision(collision); 
+        if (collision.gameObject.tag == "TestTag") {
+            transform.localScale *= 1.1f;
+        }
+    }
     void OnCollisionStay(Collision collision)
     { EvaluateCollision(collision); }
     void EvaluateCollision(Collision collision)
