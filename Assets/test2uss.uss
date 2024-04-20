@@ -1,0 +1,13 @@
+integer {
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    -unity-font-style: bold-and-italic;
+    font-size: 16px;
+    -unity-text-align: upper-center;
+    border-left-color: rgba(182, 0, 0, 0);
+    border-right-color: rgba(182, 0, 0, 0);
+    border-top-color: rgba(182, 0, 0, 0);
+    border-bottom-color: rgba(182, 0, 0, 0);
+}

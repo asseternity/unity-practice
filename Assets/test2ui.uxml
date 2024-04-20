@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/test2uss.uss?fileID=7433441132597879392&amp;guid=def4cf23cfcbdb84dba0a82b4483df6e&amp;type=3#test2uss" />
+    <ui:VisualElement name="container" style="flex-grow: 1; width: 100%;">
+        <ui:IntegerField label="Gems Collected" value="42" name="gems" class="integer" style="border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -7,6 +7,7 @@ public class PhysicsBehavior : MonoBehaviour
     [SerializeField, Range(0f, 10)] int maxAirJumps = 1;
     [SerializeField, Min(0f)] float probeDistance = 1f;
     [SerializeField] LayerMask probeMask = -1;
+    public int gemsCollected = 0;
     float minGroundDotProduct;
     int jumpPhase = 0;
     Vector3 velocity = Vector3.zero;
@@ -62,6 +63,12 @@ public class PhysicsBehavior : MonoBehaviour
             if (alignedSpeed > 0f) { jumpSpeed = Mathf.Max(jumpSpeed - alignedSpeed, 0f); } // it is done to make jumps angled to the contact surface (Physics, 3.4)
             velocity += contactNormal * jumpSpeed;
         }
+    }
+    void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "gem") {
+            gemsCollected++;
+            Destroy(other.gameObject);
+        }        
     }
     void OnCollisionEnter(Collision collision)
     { 
