@@ -1,13 +1,29 @@
-integer {
-    border-top-width: 3px;
-    border-right-width: 3px;
-    border-bottom-width: 3px;
-    border-left-width: 3px;
-    -unity-font-style: bold-and-italic;
-    font-size: 16px;
-    -unity-text-align: upper-center;
-    border-left-color: rgba(182, 0, 0, 0);
-    border-right-color: rgba(182, 0, 0, 0);
-    border-top-color: rgba(182, 0, 0, 0);
-    border-bottom-color: rgba(182, 0, 0, 0);
+#gems #unity-text-input {
+    background-color: rgba(242, 247, 255, 0);
+    border-color: rgba(242, 247, 255, 0);
+}
+
+#gems #unity-text-input TextElement {
+    -unity-font-style: bold;
+}
+
+#total #unity-text-input {
+    background-color: rgba(242, 247, 255, 0);
+    border-color: rgba(242, 247, 255, 0);
+}
+
+#total #unity-text-input TextElement {
+    -unity-font-style: bold;
+}
+
+.unity-base-field__label {
+    min-width: 90px;
+}
+
+#gems {
+    color: blue;
+}
+
+#total {
+    color: blue;
 }

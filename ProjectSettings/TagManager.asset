@@ -6,6 +6,7 @@ TagManager:
   tags:
   - TestTag
   - gem
+  - checkpoint_tag
   layers:
   - Default
   - TransparentFX

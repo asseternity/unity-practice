@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class PhysicsBehavior : MonoBehaviour
+public class RacingSphere : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 45f, maxSnapSpeed = 100f;
     [SerializeField, Range(0f, 10f)] float jumpHeight = 2f;
     [SerializeField, Range(0f, 10)] int maxAirJumps = 1;
     [SerializeField, Min(0f)] float probeDistance = 1f;
     [SerializeField] LayerMask probeMask = -1;
-    public int gemsCollected = 0;
+    public int checkpointsCollected = 0;
     float minGroundDotProduct;
     int jumpPhase = 0;
     Vector3 velocity = Vector3.zero;
@@ -67,8 +67,8 @@ public class PhysicsBehavior : MonoBehaviour
         }
     }
     void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "gem") {
-            gemsCollected++;
+        if (other.gameObject.tag == "checkpoint_tag") {
+            checkpointsCollected++;
             Destroy(other.gameObject);
         }        
     }
