@@ -134,4 +134,12 @@ public class RacingSphere : MonoBehaviour
         if (dot > 0f) { velocity = (velocity - hit.normal * dot).normalized * speed; }
         return true;
     }
+    void Start()
+    {
+        
+    }
+    void ReturnToStart()
+    {
+
+    }
 }
