@@ -2,5 +2,4 @@
     <ui:VisualElement style="flex-grow: 1; height: 80px; width: 300px; position: absolute; left: 0; background-color: rgb(255, 255, 255); display: flex;" />
     <ui:Label tabindex="-1" text="Status" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RaceStatus" style="font-size: 14px; width: 400px;" />
     <ui:Label tabindex="-1" text="Timer" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Timer" style="font-size: 14px; position: relative; flex-direction: row-reverse; -unity-text-align: upper-left; width: 400px; top: 0; left: 0;" />
-    <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Reset" style="width: 50px; height: 30px; justify-content: center; align-items: center; -unity-text-align: middle-center; left: 300px; top: -60px; background-color: rgb(244, 0, 255);" />
 </ui:UXML>

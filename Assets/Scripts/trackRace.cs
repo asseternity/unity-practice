@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 using System.Diagnostics;
 
@@ -12,7 +13,10 @@ public class trackRace : MonoBehaviour
     public GameObject player;
     public string raceStatus;
     public string elapsedTime;
+    public InputAction resetButton;
     Stopwatch stopwatch = new Stopwatch();
+    private void OnEnable() { resetButton.Enable(); }
+    private void OnDisable() { resetButton.Disable(); }
     void Start() 
     {
         raceStatus = "started";
@@ -25,6 +29,8 @@ public class trackRace : MonoBehaviour
             raceStatus = "finished";
         }
         RacingStopwatch();
+        buttonPressed = false;
+        ResetRace();
     }
     void RacingStopwatch()
     {
@@ -32,6 +38,28 @@ public class trackRace : MonoBehaviour
         elapsedTime = String.Format("{0:00}:{1:00}", ts.Seconds, ts.Milliseconds / 10);
         if (raceStatus == "finished") {
             stopwatch.Stop();
+        }
+    }
+    bool buttonPressed = false;
+    void ResetRace()
+    {
+        float resetPressed = resetButton.ReadValue<float>();
+        if (resetPressed > 0) {
+            UnityEngine.Debug.Log("reset pressed");
+            if (!buttonPressed) {
+                RacingSphere playerScript = player.GetComponent<RacingSphere>();
+                playerScript.ReturnToStart();
+                stopwatch.Reset();
+                stopwatch.Start();
+                raceStatus = "started";
+                playerScript.checkpointsCollected = 0;
+                ch1.SetActive(true);
+                ch2.SetActive(true);
+                ch3.SetActive(true);
+                ch4.SetActive(true);
+                ch5.SetActive(true);
+                buttonPressed = true;
+            }
         }
     }
 }

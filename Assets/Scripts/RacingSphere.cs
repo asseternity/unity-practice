@@ -19,6 +19,7 @@ public class RacingSphere : MonoBehaviour
     Rigidbody body;
     [SerializeField] Transform playerInputSpace = default;
     public AudioSource src;
+    private Vector3 initialPosition;
     void OnValidate() { minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad); } 
     void Awake() { body = GetComponent<Rigidbody>(); OnValidate(); }
     void Update()
@@ -69,7 +70,7 @@ public class RacingSphere : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.tag == "checkpoint_tag") {
             checkpointsCollected++;
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }        
     }
     void OnCollisionEnter(Collision collision)
@@ -136,10 +137,10 @@ public class RacingSphere : MonoBehaviour
     }
     void Start()
     {
-        
+        initialPosition = transform.position;
     }
-    void ReturnToStart()
+    public void ReturnToStart()
     {
-
+        transform.position = initialPosition;
     }
 }

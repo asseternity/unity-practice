@@ -326,6 +326,32 @@ MonoBehaviour:
   ch5: {fileID: 358242065}
   player: {fileID: 1911723578}
   raceStatus: finished
+  elapsedTime: 
+  resetButton:
+    m_Name: Reset Button
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 56f148b6-25ab-4d88-90b8-8047175cadb9
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 88896305-8b28-479f-969e-bec3b9c8e7dc
+      m_Path: <Gamepad>/buttonWest
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Reset Button
+      m_Flags: 0
+    - m_Name: 
+      m_Id: f533cdd5-29d8-41d7-9716-ed96106c0a30
+      m_Path: <XInputController>/buttonWest
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Reset Button
+      m_Flags: 0
+    m_Flags: 0
 --- !u!4 &396797206
 Transform:
   m_ObjectHideFlags: 0
