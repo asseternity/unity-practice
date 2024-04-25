@@ -7,6 +7,7 @@ TagManager:
   - TestTag
   - gem
   - checkpoint_tag
+  - enemy
   layers:
   - Default
   - TransparentFX

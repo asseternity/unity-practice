@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:ProgressBar value="100" title="Health" name="HealthBar" style="width: 300px; -unity-background-image-tint-color: rgb(18, 255, 0); background-color: rgb(20, 255, 0); transition-duration: 1s;" />
+</ui:UXML>
