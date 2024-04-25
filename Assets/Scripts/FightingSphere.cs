@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class FightingSphere : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f, maxAcceleration = 10f, maxAirAcceleration = 1f, maxGroundAngle = 45f, maxSnapSpeed = 100f;
@@ -42,6 +42,11 @@ public class FightingSphere : MonoBehaviour
         GetComponent<Renderer>().material.SetColor("_Color", onGround ? Color.black : Color.white );
 
         if (health <= 0) { Destroy(gameObject, 1f); }
+        MeleeAttack();
+        if (attacking == true) {
+            weapon.transform.position = transform.position;
+            weapon.transform.Rotate(0, 0, 540 * Time.deltaTime);
+        }
     }
 
     void FixedUpdate()
@@ -72,16 +77,16 @@ public class FightingSphere : MonoBehaviour
         if (other.gameObject.tag == "gem") {
             gemsCollected++;
             Destroy(other.gameObject);
-        } else if (other.gameObject.tag == "enemy") {
-            health -= 10;
-        }        
+        }    
     }
     void OnCollisionEnter(Collision collision)
     { 
         EvaluateCollision(collision); 
         if (collision.gameObject.tag == "TestTag") {
             transform.localScale *= 1.1f;
-        }
+        } else if (collision.gameObject.tag == "enemy") {
+            health -= 10;
+        }    
     }
     void OnCollisionStay(Collision collision)
     { EvaluateCollision(collision); }
@@ -129,10 +134,9 @@ public class FightingSphere : MonoBehaviour
         if (stepsSinceLastGrounded > 1 || stepsSinceLastJump <= 2) { return false; }
         float speed = velocity.magnitude;
         if (speed > maxSnapSpeed) { return false; }
-        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance, probeMask)) { Debug.Log("Ground not detected"); return false; }
+        if (!Physics.Raycast(body.position, Vector3.down, out RaycastHit hit, probeDistance, probeMask)) { return false; }
         if (hit.normal.y < minGroundDotProduct) { return false;}
 
-        Debug.Log("Ground detected at:" + hit.normal.y);
         contactNormal = hit.normal;
         float dot = Vector3.Dot(velocity, hit.normal);
         if (dot > 0f) { velocity = (velocity - hit.normal * dot).normalized * speed; }
@@ -145,13 +149,24 @@ public class FightingSphere : MonoBehaviour
     {
         initialWeaponPosition = weapon.transform.position;
     }
+    bool attacking = false;
     void MeleeAttack()
     {
-        weapon.transform.position = transform.position;
-        Invoke("RemoveWeapon", 5f);
+        float attackDown = attackButton.ReadValue<float>();
+        if (attackDown > 0) {
+            if (attacking == false) {
+                attacking = true;
+                weapon.transform.position = transform.position;
+                Invoke("RemoveWeapon", 1f);
+            }
+        }
     }
     void RemoveWeapon()
     {
         weapon.transform.position = initialWeaponPosition;
+        attacking = false;
     }
+    public InputAction attackButton;
+    private void OnEnable() { attackButton.Enable(); }
+    private void OnDisable() { attackButton.Disable(); }
 }

@@ -8,6 +8,7 @@ TagManager:
   - gem
   - checkpoint_tag
   - enemy
+  - weapon
   layers:
   - Default
   - TransparentFX

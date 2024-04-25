@@ -9,16 +9,16 @@ public class enemyAI : MonoBehaviour
     void Update()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-        if (distanceToPlayer < 10f) {
+        if (distanceToPlayer < 30f) {
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
         }
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "weapon")
         {
             explode.Play();
-            Destroy(gameObject, 1f);
+            Destroy(gameObject, 0.6f);
         }
     }
 }
